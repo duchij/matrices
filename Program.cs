@@ -11,45 +11,47 @@ namespace matrices
         static void Main(string[] args)
         {
 
-            Matrix mtrc = new Matrix();
+            MatrixM mtrc1 = new MatrixM(10,10);
+            MatrixM mtrc2 = new MatrixM(10,10);
 
-            int[][] matrix1 = mtrc.fillMatrix(10, 10);
-            int[][] matrix2 = mtrc.fillMatrix(10, 10);
+            mtrc1.fillMatrix(40);
+
+            mtrc2.fillMatrix(60);
 
             Console.WriteLine("Matrica 1:");
-            Matrix.displayMatrix(matrix1);
+            MatrixM.displayMatrix(mtrc1);
 
             Console.WriteLine("Matrica 2:");
-            Matrix.displayMatrix(matrix2);
+            MatrixM.displayMatrix(mtrc2);
 
             Console.WriteLine("Matrice 1.Spocitat, 2.Odratat, 3.nasobit, 4.unar operator - ?");
             string function = Console.ReadLine();
 
-            int[][] res;
+            MatrixM res = new MatrixM(10, 10);
 
             try
             {
-                switch (function)
+               switch (function)
                 {
                     case "1":
-                        res = mtrc.matrixMath(matrix1, matrix2,"sum");
-                        Matrix.displayMatrix(res, "Suma");
-                        Matrix.unaryNegat(res);
+                        res = mtrc1 + mtrc2;
+                        MatrixM.displayMatrix(res, "Suma");
+                        MatrixM.unaryNegat(res);
                         break;
                     case "2":
-                        res = mtrc.matrixMath(matrix1, matrix2,"sub");
-                        Matrix.displayMatrix(res, "Ocitanie");
-                        Matrix.unaryNegat(res);
+                        res = mtrc1 - mtrc2;
+                        MatrixM.displayMatrix(res, "Ocitanie");
+                        MatrixM.unaryNegat(res);
                         break;
                     case "3":
-                        res = mtrc.matrixMath(matrix1, matrix2,"multi");
-                        Matrix.displayMatrix(res, "Nasobenie");
-                        Matrix.unaryNegat(res);
+                        res = mtrc1 * mtrc2;
+                        MatrixM.displayMatrix(res, "Nasobenie");
+                        MatrixM.unaryNegat(res);
                         break;
                         
                 }
 
-               
+                Console.WriteLine("Pozicia riadok {0} stlpec {1} vysledok:{2}",4,5,res[4,5]);
 
                 Console.ReadKey();
             }

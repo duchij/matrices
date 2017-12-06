@@ -8,22 +8,55 @@ namespace matrices
 {
     class MatrixM
     {
-        int[][] _m;
+        int[,] _m;
         int _i, _j;
 
         int v;
 
-       public int rows;
-       public int cols;
+       public int Rows { get; private set; }
+       public int Cols { get; private set; }
 
-
-        public MatrixM(int[][] m)
+        public MatrixM(int rows, int cols, int[,] mdata)
         {
-            this._m = m;
+            this.Cols = cols;
+            this.Rows = rows;
 
-            this.rows = m.Length;
-            this.cols = m[this.rows].Length;
+            this._m = new int[rows, cols];
 
+            this._m = mdata;
+
+        }
+
+        public void fillMatrix(int max)
+        {
+            Random rnd = new Random();
+
+            for (int i=0; i< this.Rows; i++)
+            {
+                for (int j=0; j<this.Cols; j++)
+                {
+                    this._m[i, j] = rnd.Next(0,max);
+                }
+            }
+           
+        }
+
+
+        public MatrixM(int rows, int cols)
+        {
+            this.Cols = cols;
+            this.Rows = rows;
+
+            this._m = new int[rows, cols];
+
+           /// this._m = mdata;
+
+        }
+
+        public int this[int r,int c]
+        {
+            get { return this._m[r, c]; }
+            set { this._m[r, c] = value; }
         }
 
         public void setIndex(int i, int j)
@@ -32,7 +65,7 @@ namespace matrices
             this._j = j;
         }
 
-        public static int multiply(MatrixM m1,MatrixM m2)
+     /*  public static int multiply(MatrixM m1,MatrixM m2)
         {
 
             for (int i = 0; i < MatrixM.rows; i++)
@@ -40,7 +73,7 @@ namespace matrices
                     for (int k = 0; k < A.cols; k++)
                         R[i, j] += A[i, k] * B[k, j];
             return R;
-        }
+        }*/
               
 
         public MatrixM(int v)
@@ -48,19 +81,83 @@ namespace matrices
            this.v = v; 
         }
 
+        private static MatrixM mSum(MatrixM m1,MatrixM m2)
+        {
+            MatrixM m = new MatrixM(m1.Rows, m1.Cols);
+
+            for (int i=0; i<m1.Rows; i++)
+            {
+                for (int j=0; j<m1.Cols; j++)
+                {
+                    m[i, j] = m1[i, j] + m2[i, j];
+                }
+            }
+
+            return m;
+        }
+
+
+        private static MatrixM mSub(MatrixM m1, MatrixM m2)
+        {
+            MatrixM m = new MatrixM(m1.Rows, m1.Cols);
+
+            for (int i = 0; i < m1.Rows; i++)
+            {
+                for (int j = 0; j < m1.Cols; j++)
+                {
+                    m[i, j] = m1[i, j] - m2[i, j];
+                }
+            }
+
+            return m;
+        }
+
+        private static MatrixM multi(MatrixM m1, MatrixM m2)
+        {
+            MatrixM m = new MatrixM(m1.Rows, m1.Cols);
+
+            for (int i = 0; i < m1.Rows; i++)
+            {
+                for (int j = 0; j < m1.Cols; j++)
+                {
+                    for (int k = 0; k < m1.Cols; k++)
+                    {
+                        m[i, j] += m1[i, k] * m2[k, j];
+                    }
+                }
+            }
+            return m;
+        }
+
+        public static void unaryNegat(MatrixM m)
+        {
+            MatrixM r = new MatrixM(m.Rows, m.Cols);
+
+            for (int i = 0; i < m.Rows; i++)
+            {
+                for (int j = 0; j < m.Cols; j++)
+                {
+                    r[i, j] = -m[i, j];
+                }
+            }
+            MatrixM.displayMatrix(r,"unary Negat");
+        }
+
+
+
         public static MatrixM operator +(MatrixM m1, MatrixM m2)
         {
-            return new MatrixM(m1._m[m1._i][m1._j] + m2._m[m2._i][m2._j]);
+            return MatrixM.mSum(m1,m2);
         }
 
         public static MatrixM operator -(MatrixM m1, MatrixM m2)
         {
-            return new MatrixM(m1._m[m1._i][m1._j] - m2._m[m2._i][m2._j]);
+            return MatrixM.mSub(m1, m2);
         }
 
         public static MatrixM operator *(MatrixM m1, MatrixM m2)
         {
-            return new MatrixM(m1._m[m1._i][m1._j] * m2._m[m2._i][m2._j]);
+            return MatrixM.multi(m1,m2);
         }
 
         public static implicit operator int(MatrixM M)
@@ -68,152 +165,24 @@ namespace matrices
             return (int)M.v;
         }
 
-    }
 
-
-    class Matrix
-    {
-        private int i, j;
-        public Random rnd = new Random();
-
-        public Matrix()
-        {
-
-        }
-
-        public int[][] fillMatrix(int n, int m)
-        {
-            int[][] res = new int[n][];
-
-            for (int i=0; i<n; i++)
-            {
-                res[i] = new int[m];
-
-                for (int j=0; j<m; j++)
-                {
-                    res[i][j] = this.rnd.Next(0, 100);
-                }
-            }
-
-            return res;
-        }
-
-
-        public static void displayMatrix(int[][] matrix,string type="vypis")
+        public static void displayMatrix(MatrixM matrix, string type = "vypis")
         {
             Console.WriteLine("Matrica vypis ({0}):", type);
-            int n = matrix.Length;
+            int n = matrix.Cols;
+            int m = matrix.Rows;
 
-            for (int i=0; i < n; i++)
+            for (int i = 0; i < m; i++)
             {
-                string tmp = String.Join(",", Array.ConvertAll<int, String>(matrix[i], Convert.ToString));
-                Console.WriteLine(tmp);
-            }
-
-        } 
-
-        public static void unaryNegat(int[][] matrix)
-        {
-            
-
-            int n = matrix.Length;
-            int m = matrix[n - 1].Length;
-            int[][] res = new int[n][];
-
-            for (int i=0; i<n; i++)
-            {
-                res[i] = new int[m];
-
-                for (int j=0; j<m; j++)
+                for (int j = 0; j < n; j++)
                 {
-                    res[i][j] = -matrix[i][j];
+                    Console.Write(matrix[i, j] + ",");
                 }
+                Console.WriteLine();
             }
 
-            Matrix.displayMatrix(res,"unary negat");
-
-        }
-
-        private bool checkSize(int[][] matrix1, int[][] matrix2)
-        {
-            bool result = true;
-
-            int n1 = matrix1.Length;
-            //int n2 = matrix2.Length;
-
-            if (n1 != matrix2.Length)
-            {
-                result = false;
-            }
-
-            int m1 = matrix1[n1-1].Length;
-            //int m2 = matrix2[n2].Length;
-
-            if (m1 != matrix2[n1-1].Length)
-            {
-                result = false;
-            }
-            return result;
-        }
-
-        public int matrixIndex(int x, int y, int[][] matrix)
-        {
-            int result = -1;
-
-            result = matrix[x][y];
-
-            return result;
-           
-        }
-
-        public int[][] matrixMath(int[][]matrix1, int[][]matrix2, string operation)
-        {
-
-           // MatrixM.matrix = matrix1;
-
-            if (!this.checkSize(matrix1, matrix2))
-            {
-                throw new Exception("Matrice sa nerovnaju vo vertikalnom alebo horizontalnom smere !!!!");
-            }
-
-            int n = matrix1.Length;
-            int m = matrix1[n-1].Length;
-            
-            int[][] result = new int[n][];
-
-
-            MatrixM M1 = new MatrixM(matrix1);
-            MatrixM M2 = new MatrixM(matrix2);
-
-
-            for (int i=0; i<n; i++)
-            {
-                result[i] = new int[m];
-
-                for (int j=0; j<m; j++)
-                {
-                    M1.setIndex(i, j);
-                    M2.setIndex(i, j);
-
-                    switch (operation){
-
-                        case "sum":
-                            result[i][j] =M1 + M2;
-                            break;
-                        case "sub":
-                            result[i][j] = M1 - M2;
-                            break;
-                        case "multi":
-                            result[i][j] = M1 * M2;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-
-            return result;
         }
 
     }
+    
 }
